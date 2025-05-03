@@ -1,3 +1,5 @@
 %{
+  "observer_cli": {:hex, :observer_cli, "1.8.3", "866ee083eb3482d5f40d301c2ac7e1df0b6061d02ae771e164d71931d3c687c4", [:mix, :rebar3], [{:recon, "~> 2.5.6", [hex: :recon, repo: "hexpm", optional: false]}], "hexpm", "041c638d54cc8265e6e0472aec7c17a83bb2c4a02628ddedd9138747d9d0b8bf"},
   "poolboy": {:hex, :poolboy, "1.5.2", "392b007a1693a64540cead79830443abf5762f5d30cf50bc95cb2c1aaafa006b", [:rebar3], [], "hexpm", "dad79704ce5440f3d5a3681c8590b9dc25d1a561e8f5a9c995281012860901e3"},
+  "recon": {:hex, :recon, "2.5.6", "9052588e83bfedfd9b72e1034532aee2a5369d9d9343b61aeb7fbce761010741", [:mix, :rebar3], [], "hexpm", "96c6799792d735cc0f0fd0f86267e9d351e63339cbe03df9d162010cefc26bb0"},
 }
