@@ -1,8 +1,6 @@
 defmodule Todo.Server do
   use GenServer, restart: :temporary
   
-  @expiry_idle_timeout :timer.seconds(10)
-  
   def start_link(name) do
     GenServer.start_link(Todo.Server, name, name: via_tuple(name))
   end
@@ -30,7 +28,7 @@ defmodule Todo.Server do
     {
       :noreply, 
       {name, todo_list},
-      @expiry_idle_timeout
+      expiry_idle_timeout()
     }
   end
   
@@ -38,7 +36,7 @@ defmodule Todo.Server do
   def handle_cast({:add_entry, new_entry}, {name, todo_list}) do
     new_list = Todo.List.add_entry(todo_list, new_entry)
     Todo.Database.store(name, new_list)
-    {:noreply, {name, new_list}, @expiry_idle_timeout}
+    {:noreply, {name, new_list}, expiry_idle_timeout()}
   end
   
   @impl GenServer
@@ -47,7 +45,7 @@ defmodule Todo.Server do
       :reply,
       Todo.List.entries(todo_list, date),
       {name, todo_list},
-      @expiry_idle_timeout
+      expiry_idle_timeout()
     }
   end
   
@@ -56,4 +54,6 @@ defmodule Todo.Server do
     IO.puts("Stopping to-do list server for #{name}")
     {:stop, :normal, {name, todo_list}}
   end
+  
+  defp expiry_idle_timeout(), do: Application.fetch_env!(:todo, :todo_server_expiry)
 end
