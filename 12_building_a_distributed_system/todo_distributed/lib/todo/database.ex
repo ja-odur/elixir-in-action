@@ -1,11 +1,15 @@
 defmodule Todo.Database do
-  
+
   def child_spec(_) do
     db_settings = Application.fetch_env!(:todo, :database)
-    db_folder = Keyword.fetch!(db_settings, :db_folder)
-    
+
+    # Node name is used to determine the database folder. This allows us to
+    # start multiple nodes from the same folders, and data will not clash.
+    [name_prefix, _] = "#{node()}" |> String.split("@")
+    db_folder = "#{Keyword.fetch!(db_settings, :db_folder)}/#{name_prefix}"
+
     File.mkdir_p!(db_folder)
-    
+
     :poolboy.child_spec(
       __MODULE__,
       [
@@ -16,18 +20,19 @@ defmodule Todo.Database do
       [db_folder]
     )
   end
-  
+
+
   def store(key, data) do
     {_result, bad_nodes} =
       :rpc.multicall(
-        __MODULE__, 
+        __MODULE__,
         :store_local,
         [key, data],
         :timer.seconds(5)
       )
-    
-      Enum.each(bad_nodes, &IO.puts("Store failed on node #{&1}"))
-      :ok 
+
+    Enum.each(bad_nodes, &IO.puts("Store failed on node #{&1}"))
+    :ok
   end
 
   def store_local(key, data) do
